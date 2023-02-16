@@ -362,7 +362,7 @@ public class DeltaLakeMergeSink
 
             List<Type> parquetTypes = dataColumns.stream()
                     .map(column -> {
-                        Type type = column.getType();
+                        Type type = column.getPhysicalType();
                         if (type instanceof TimestampWithTimeZoneType timestamp) {
                             verify(timestamp.getPrecision() == 3, "Unsupported type: %s", type);
                             return TIMESTAMP_MILLIS;
@@ -370,9 +370,8 @@ public class DeltaLakeMergeSink
                         return type;
                     })
                     .collect(toImmutableList());
-
             List<String> dataColumnNames = dataColumns.stream()
-                    .map(DeltaLakeColumnHandle::getName)
+                    .map(DeltaLakeColumnHandle::getPhysicalName)
                     .collect(toImmutableList());
             ParquetSchemaConverter schemaConverter = new ParquetSchemaConverter(
                     parquetTypes,
