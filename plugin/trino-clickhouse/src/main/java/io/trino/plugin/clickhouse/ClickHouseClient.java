@@ -224,7 +224,8 @@ public class ClickHouseClient
                 ImmutableSet.<AggregateFunctionRule<JdbcExpression, String>>builder()
                         .add(new ImplementCountAll(bigintTypeHandle))
                         .add(new ImplementCount(bigintTypeHandle))
-                        .add(new ImplementMinMax(false)) // TODO: Revisit once https://github.com/trinodb/trino/issues/7100 is resolved
+                        .add(new ImplementMinMax())
+                        //ADR remove agg pushdown override .add(new ImplementMinMax(false)) // TODO: Revisit once https://github.com/trinodb/trino/issues/7100 is resolved
                         .add(new ImplementSum(ClickHouseClient::toTypeHandle))
                         .add(new ImplementAvgFloatingPoint())
                         .add(new ImplementAvgBigint())
@@ -238,12 +239,12 @@ public class ClickHouseClient
         return aggregateFunctionRewriter.rewrite(session, aggregate, assignments);
     }
 
-    @Override
-    public boolean supportsAggregationPushdown(ConnectorSession session, JdbcTableHandle table, List<AggregateFunction> aggregates, Map<String, ColumnHandle> assignments, List<List<ColumnHandle>> groupingSets)
-    {
-        // TODO: Remove override once https://github.com/trinodb/trino/issues/7100 is resolved. Currently pushdown for textual types is not tested and may lead to incorrect results.
-        return preventTextualTypeAggregationPushdown(groupingSets);
-    }
+    //ADR remove agg pushdown override@Override
+    //ADR remove agg pushdown overridepublic boolean supportsAggregationPushdown(ConnectorSession session, JdbcTableHandle table, List<AggregateFunction> aggregates, Map<String, ColumnHandle> assignments, List<List<ColumnHandle>> groupingSets)
+    //ADR remove agg pushdown override{
+    //ADR remove agg pushdown override    // TODO: Remove override once https://github.com/trinodb/trino/issues/7100 is resolved. Currently pushdown for textual types is not tested and may lead to incorrect results.
+    //ADR remove agg pushdown override    return preventTextualTypeAggregationPushdown(groupingSets);
+    //ADR remove agg pushdown override}
 
     @Override
     public Optional<String> convertPredicate(ConnectorSession session, ConnectorExpression expression, Map<String, ColumnHandle> assignments)
