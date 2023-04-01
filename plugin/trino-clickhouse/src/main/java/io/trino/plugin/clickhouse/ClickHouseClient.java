@@ -217,7 +217,7 @@ public class ClickHouseClient
         this.connectorExpressionRewriter = JdbcConnectorExpressionRewriterBuilder.newBuilder()
                 .addStandardRules(this::quoted)
                 .map("$like(value: varchar, pattern: varchar): boolean").to("value LIKE pattern")
-                .map("$like(value: varchar, pattern: varchar, escape: varchar(1)): boolean").to("value LIKE pattern ESCAPE escape")                
+                .map("$like(value: varchar, pattern: varchar, escape: varchar(1)): boolean").to("value LIKE pattern ESCAPE escape")
                 .build();
         this.aggregateFunctionRewriter = new AggregateFunctionRewriter<>(
                 this.connectorExpressionRewriter,
@@ -244,7 +244,7 @@ public class ClickHouseClient
         // TODO: Remove override once https://github.com/trinodb/trino/issues/7100 is resolved. Currently pushdown for textual types is not tested and may lead to incorrect results.
         return preventTextualTypeAggregationPushdown(groupingSets);
     }
-    
+
     @Override
     public Optional<String> convertPredicate(ConnectorSession session, ConnectorExpression expression, Map<String, ColumnHandle> assignments)
     {

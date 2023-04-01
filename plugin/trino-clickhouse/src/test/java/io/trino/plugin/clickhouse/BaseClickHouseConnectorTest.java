@@ -79,8 +79,8 @@ public abstract class BaseClickHouseConnectorTest
                 return false;
 
             case SUPPORTS_PREDICATE_EXPRESSION_PUSHDOWN_WITH_LIKE:
-            return true;
-                
+                return true;
+
             default:
                 return super.hasBehavior(connectorBehavior);
         }
