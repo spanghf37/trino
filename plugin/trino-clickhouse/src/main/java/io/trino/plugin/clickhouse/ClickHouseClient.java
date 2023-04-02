@@ -224,7 +224,7 @@ public class ClickHouseClient
                 ImmutableSet.<AggregateFunctionRule<JdbcExpression, String>>builder()
                         .add(new ImplementCountAll(bigintTypeHandle))
                         .add(new ImplementCount(bigintTypeHandle))
-                        .add(new ImplementMinMax(false)) //ADR added - check with true?
+                        .add(new ImplementMinMax(true)) //ADR added - check with true?
                         //ADR remove agg pushdown override .add(new ImplementMinMax(false)) // TODO: Revisit once https://github.com/trinodb/trino/issues/7100 is resolved
                         .add(new ImplementSum(ClickHouseClient::toTypeHandle))
                         .add(new ImplementAvgFloatingPoint())
