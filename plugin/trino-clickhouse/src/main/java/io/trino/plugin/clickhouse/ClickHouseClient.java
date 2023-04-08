@@ -252,7 +252,7 @@ public class ClickHouseClient
     { //ADR https://github.com/trinodb/trino/pull/16414
         return connectorExpressionRewriter.rewrite(session, expression, assignments); //ADR https://github.com/trinodb/trino/pull/16414
     } //ADR https://github.com/trinodb/trino/pull/16414
-    //ADR https://github.com/trinodb/trino/pull/16414
+
     private static Optional<JdbcTypeHandle> toTypeHandle(DecimalType decimalType)
     {
         return Optional.of(new JdbcTypeHandle(Types.DECIMAL, Optional.of("Decimal"), Optional.of(decimalType.getPrecision()), Optional.of(decimalType.getScale()), Optional.empty(), Optional.empty()));
