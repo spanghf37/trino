@@ -78,9 +78,9 @@ public abstract class BaseClickHouseConnectorTest
             case SUPPORTS_NEGATIVE_DATE:
                 return false;
 
-            case SUPPORTS_PREDICATE_EXPRESSION_PUSHDOWN_WITH_LIKE:
-                return true;
-
+            case SUPPORTS_PREDICATE_EXPRESSION_PUSHDOWN_WITH_LIKE: //ADR https://github.com/trinodb/trino/pull/16414
+                return true; //ADR https://github.com/trinodb/trino/pull/16414
+            //ADR https://github.com/trinodb/trino/pull/16414
             default:
                 return super.hasBehavior(connectorBehavior);
         }

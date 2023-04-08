@@ -56,7 +56,7 @@ import io.trino.spi.connector.ColumnHandle;
 import io.trino.spi.connector.ColumnMetadata;
 import io.trino.spi.connector.ConnectorSession;
 import io.trino.spi.connector.ConnectorTableMetadata;
-import io.trino.spi.expression.ConnectorExpression;
+import io.trino.spi.expression.ConnectorExpression; //ADR https://github.com/trinodb/trino/pull/16414
 import io.trino.spi.type.CharType;
 import io.trino.spi.type.DecimalType;
 import io.trino.spi.type.Decimals;
@@ -217,16 +217,16 @@ public class ClickHouseClient
         JdbcTypeHandle bigintTypeHandle = new JdbcTypeHandle(Types.BIGINT, Optional.of("bigint"), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
         this.connectorExpressionRewriter = JdbcConnectorExpressionRewriterBuilder.newBuilder()
                 .addStandardRules(this::quoted)
-                .map("$like(value: varchar, pattern: varchar): boolean").to("value LIKE pattern")
-                .map("$like(value: varchar, pattern: varchar, escape: varchar(1)): boolean").to("value LIKE pattern ESCAPE escape")
+                .map("$like(value: varchar, pattern: varchar): boolean").to("value LIKE pattern") //ADR https://github.com/trinodb/trino/pull/16414
+                .map("$like(value: varchar, pattern: varchar, escape: varchar(1)): boolean").to("value LIKE pattern ESCAPE escape") //ADR https://github.com/trinodb/trino/pull/16414
                 .build();
         this.aggregateFunctionRewriter = new AggregateFunctionRewriter<>(
                 this.connectorExpressionRewriter,
                 ImmutableSet.<AggregateFunctionRule<JdbcExpression, String>>builder()
                         .add(new ImplementCountAll(bigintTypeHandle))
                         .add(new ImplementCount(bigintTypeHandle))
-                        .add(new ImplementMinMax(true)) //ADR added - check with true?
-                        //ADR remove agg pushdown override .add(new ImplementMinMax(false)) // TODO: Revisit once https://github.com/trinodb/trino/issues/7100 is resolved
+                        .add(new ImplementMinMax(true)) //ADR
+                        //ADR .add(new ImplementMinMax(false)) // TODO: Revisit once https://github.com/trinodb/trino/issues/7100 is resolved
                         .add(new ImplementSum(ClickHouseClient::toTypeHandle))
                         .add(new ImplementAvgFloatingPoint())
                         .add(new ImplementAvgBigint())
@@ -240,19 +240,19 @@ public class ClickHouseClient
         return aggregateFunctionRewriter.rewrite(session, aggregate, assignments);
     }
 
-    //ADR remove agg pushdown override@Override
-    //ADR remove agg pushdown overridepublic boolean supportsAggregationPushdown(ConnectorSession session, JdbcTableHandle table, List<AggregateFunction> aggregates, Map<String, ColumnHandle> assignments, List<List<ColumnHandle>> groupingSets)
-    //ADR remove agg pushdown override{
-    //ADR remove agg pushdown override    // TODO: Remove override once https://github.com/trinodb/trino/issues/7100 is resolved. Currently pushdown for textual types is not tested and may lead to incorrect results.
-    //ADR remove agg pushdown override    return preventTextualTypeAggregationPushdown(groupingSets);
-    //ADR remove agg pushdown override}
+    //ADR @Override
+    //ADR public boolean supportsAggregationPushdown(ConnectorSession session, JdbcTableHandle table, List<AggregateFunction> aggregates, Map<String, ColumnHandle> assignments, List<List<ColumnHandle>> groupingSets)
+    //ADR {
+    //ADR     // TODO: Remove override once https://github.com/trinodb/trino/issues/7100 is resolved. Currently pushdown for textual types is not tested and may lead to incorrect results.
+    //ADR     return preventTextualTypeAggregationPushdown(groupingSets);
+    //ADR }
 
-    @Override
-    public Optional<String> convertPredicate(ConnectorSession session, ConnectorExpression expression, Map<String, ColumnHandle> assignments)
-    {
-        return connectorExpressionRewriter.rewrite(session, expression, assignments);
-    }
-
+    @Override //ADR https://github.com/trinodb/trino/pull/16414
+    public Optional<String> convertPredicate(ConnectorSession session, ConnectorExpression expression, Map<String, ColumnHandle> assignments) //ADR https://github.com/trinodb/trino/pull/16414
+    { //ADR https://github.com/trinodb/trino/pull/16414
+        return connectorExpressionRewriter.rewrite(session, expression, assignments); //ADR https://github.com/trinodb/trino/pull/16414
+    } //ADR https://github.com/trinodb/trino/pull/16414
+    //ADR https://github.com/trinodb/trino/pull/16414
     private static Optional<JdbcTypeHandle> toTypeHandle(DecimalType decimalType)
     {
         return Optional.of(new JdbcTypeHandle(Types.DECIMAL, Optional.of("Decimal"), Optional.of(decimalType.getPrecision()), Optional.of(decimalType.getScale()), Optional.empty(), Optional.empty()));
