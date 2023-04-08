@@ -121,6 +121,7 @@ import static io.trino.plugin.jdbc.DecimalSessionSessionProperties.getDecimalRou
 import static io.trino.plugin.jdbc.DecimalSessionSessionProperties.getDecimalRoundingMode;
 import static io.trino.plugin.jdbc.JdbcErrorCode.JDBC_ERROR;
 import static io.trino.plugin.jdbc.PredicatePushdownController.DISABLE_PUSHDOWN;
+import static io.trino.plugin.jdbc.PredicatePushdownController.FULL_PUSHDOWN; //ADR
 import static io.trino.plugin.jdbc.StandardColumnMappings.bigintColumnMapping;
 import static io.trino.plugin.jdbc.StandardColumnMappings.bigintWriteFunction;
 import static io.trino.plugin.jdbc.StandardColumnMappings.booleanWriteFunction;
@@ -559,7 +560,8 @@ public class ClickHouseClient
                             createUnboundedVarcharType(),
                             varcharReadFunction(createUnboundedVarcharType()),
                             varcharWriteFunction(),
-                            DISABLE_PUSHDOWN));
+                            //ADR DISABLE_PUSHDOWN));
+                            FULL_PUSHDOWN));
                 }
                 // TODO (https://github.com/trinodb/trino/issues/7100) test & enable predicate pushdown
                 return Optional.of(varbinaryColumnMapping());
